@@ -1,31 +1,22 @@
 #include "list.h"
 
-#include <iostream>
-
-#include <iostream>
-
-int sum_of_squares(int n) {
-	int sum = 0;
-	while (n > 0) {
-		int digit = n % 10;
-		sum += digit * digit;
-		n /= 10;
+void solve_hanoi(int n, LinkedList<int>& source, LinkedList<int>& target, LinkedList<int>& auxiliary, const std::string& source_name, const std::string& target_name, const std::string& auxiliary_name) {
+	if (n == 1) {
+		int disk = source[source.get_size() - 1];
+		source.pop_tail();
+		target.push_tail(disk);
+		std::cout <<"Moved disk " << disk << " from " << source_name << " to " << target_name<<"\t"<<" source->" << source << "\t" << " target->" << target << "\t" << " aux->" << auxiliary << "\n";
+		return;
 	}
-	return sum;
+	solve_hanoi(n - 1, source, auxiliary, target, source_name, auxiliary_name, target_name);
+	int disk = source[source.get_size() - 1];
+	source.pop_tail();
+	target.push_tail(disk);
+	std::cout << "Moved disk " << disk << " from " << source_name << " to " << target_name << "\t" << " source->" << source << "\t" << " target->" << target << "\t" << " aux->" << auxiliary << "\n";
+
+	solve_hanoi(n - 1, auxiliary, target, source, auxiliary_name, target_name, source_name);
 }
 
-template<typename T>
-bool is_happy(T value) {
-	int number = value;
-	int slow = number, fast = number;
-
-	do {
-		slow = sum_of_squares(slow);
-		fast = sum_of_squares(sum_of_squares(fast));
-	} while (slow != fast && slow != 1 && fast != 1);
-
-	return slow == 1; 
-}
 
 int main() {
 	LinkedList<int> list;
@@ -58,28 +49,18 @@ int main() {
 
 
 	std::cout << "---------------------------------------------";
-	int N = 30;
 
-	LinkedList<int> numbers;
-	for (int i = 1; i <= N; ++i) {
-		numbers.push_tail(i);
+	std::cout << std::endl;
+	LinkedList<int> tower1, tower2, tower3;
+	for (int i = 3; i > 0; --i) {
+		tower1.push_tail(i);
 	}
-
-	std::cout << "\nUnhappy numbers in range [1; " << N << "]: ";
-	for (size_t i = 0; i < numbers.get_size(); ++i) {
-		int number = numbers[i];
-		if (!is_happy(number)) {
-			std::cout << number << " ";
-		}
-	}
+	solve_hanoi(3, tower1, tower2, tower3, "source","target","auxiliary");
 	
 	std::cout << std::endl;
 	std::cout << "---------------------------------------------\n";
-
-
-
-
 }
+
 
 
 
